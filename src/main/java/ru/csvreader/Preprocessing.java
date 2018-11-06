@@ -16,7 +16,7 @@ public class Preprocessing {
     private Boolean flagRemoveHeader = false;
 
     public void Process(String inputFile) throws Exception {
-        List<String> lines = Files.readAllLines(Paths.get("files/" + inputFile), Charset.defaultCharset());
+        List<String> lines = Files.readAllLines(Paths.get("/mnt/dev/Java/CSVReader/files/" + inputFile + ".csv"), Charset.defaultCharset());
 
         StringBuilder newLines = new StringBuilder();
 
@@ -39,8 +39,9 @@ public class Preprocessing {
 
         outputFile = "VO_" + dateFormat.format(date) + "_" + numOutputFile + ".exb";
 
-        PrintWriter out = new PrintWriter("files/" + outputFile);
+        PrintWriter out = new PrintWriter("/mnt/dev/Java/CSVReader/files/" + outputFile);
         out.println(text);
         out.close();
+
     }
 }
