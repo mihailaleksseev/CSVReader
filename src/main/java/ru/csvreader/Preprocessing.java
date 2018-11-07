@@ -14,13 +14,13 @@ public class Preprocessing {
     private String outputFile;
     private Boolean flagRemoveHeader = false;
 
-    public void Process(String inputFile, String numOutputFile, String removingColumnByName, String removingColumnByNum) throws Exception {
-
-        List<String> lines = Files.readAllLines(Paths.get("/mnt/dev/Java/CSVReader/files/" + inputFile + ".csv"), Charset.forName("windows-1251"));
+    public void Process(String inputFile, String numOutputFile, String removingColumnByNum) throws Exception {
+        System.out.println("start preprocc");
+        List<String> lines = Files.readAllLines(Paths.get("./../../files/" +
+                inputFile), Charset.forName("windows-1251"));
 
         StringBuilder newLines = new StringBuilder();
 
-        System.out.println("removing column by name: " + removingColumnByName);
         System.out.println("removing column by num: " + removingColumnByNum);
 
         for(String str : lines){
@@ -30,7 +30,7 @@ public class Preprocessing {
             } else {
                 String newStr = "^" + str + "^";
                 newLines.append(newStr).append(System.lineSeparator());
-                String secondLine = newStr.substring(0,26)+ "2" +newStr.substring(27);
+                String secondLine = newStr.substring(0,27)+ "2" +newStr.substring(28);
                 newLines.append(secondLine).append(System.lineSeparator());
             }
         }
@@ -43,7 +43,7 @@ public class Preprocessing {
 
         outputFile = "VO_" + dateFormat.format(date) + "_" + numOutputFile + ".exb";
 
-        PrintWriter out = new PrintWriter("/mnt/dev/Java/CSVReader/files/" + outputFile);
+        PrintWriter out = new PrintWriter("./../../files/" + outputFile);
         out.println(text);
         out.close();
 
