@@ -33,9 +33,9 @@ public class Preprocessing {
                 } else {
 
                     System.out.println("removing column by num: " + removingColumn);
-                    this.removeColumns(str, removingColumn);
+                    String newStr = this.removeColumns(str, removingColumn);
 
-                    String newStr = "^" + str + "^";
+//                    String newStr = "^" + str + "^";
 
                     newLines.append(newStr).append(System.lineSeparator());
 
@@ -69,11 +69,13 @@ public class Preprocessing {
         ArrayList<Integer> columns = getIntegerArray(removingColumnsArray);
 
         lineWithoutSomeColumns.set(6, "2");
-        lineWithoutSomeColumns.remove(0);
-        lineWithoutSomeColumns.remove(1);
+
         lineWithoutSomeColumns.remove(2);
+        lineWithoutSomeColumns.remove(1);
+        lineWithoutSomeColumns.remove(0);
+
         for (int column : columns){
-            System.out.println("column " + column);
+            System.out.println("int column " + column);
             lineWithoutSomeColumns.remove(column);
         }
 
