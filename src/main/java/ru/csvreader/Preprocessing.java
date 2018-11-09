@@ -12,47 +12,39 @@ import java.util.*;
 public class Preprocessing {
 
     private Boolean flagRemoveHeader = false;
+    private Boolean needIdChanged = false;
 
     public void Process(String inputFile, String numOutputFile) throws Exception {
-        this.Process(inputFile, numOutputFile, null);
+        this.Process(inputFile, numOutputFile, "");
     }
 
     public void Process(String inputFile, String numOutputFile, String removingColumn) throws Exception {
-        String readingFilePath = "./../../files/" + inputFile;
+        String readingFilePath = inputFile;
         File readingFile = new File(readingFilePath);
 
         if (readingFile.exists())
         {
-            List<String> lines = Files.readAllLines(Paths.get(readingFilePath), Charset.forName("windows-1251"));
+            List<String> lines = Files.readAllLines(Paths.get
+                    (readingFilePath), Charset.forName("windows-1251"));
             StringBuilder newLines = new StringBuilder();
 
             for(String str : lines){
                 if (!flagRemoveHeader) {
                     flagRemoveHeader = true;
-                    continue;
                 } else {
-
-                    System.out.println("removing column by num: " + removingColumn);
-                    String newStr = this.removeColumns(str, removingColumn);
-
-//                    String newStr = "^" + str + "^";
-
-                    newLines.append(newStr).append(System.lineSeparator());
-
-//                    String secondLine = newStr.substring(0,27)+ "2" +newStr.substring(28);
-                    newLines.append(newStr).append(System.lineSeparator());
+                    newLines.append(this.removeColumns(str,removingColumn)).append(System.lineSeparator());
+                    newLines.append(this.removeColumns(str,removingColumn)).append(System.lineSeparator());
                 }
             }
 
             String text = newLines.toString();
-            text = text.replaceAll(";", "^");
 
             DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
             Date date = new Date();
 
             String outputFile = "VO_" + dateFormat.format(date) + "_" + numOutputFile + ".exb";
 
-            PrintWriter out = new PrintWriter("./../../files/" + outputFile);
+            PrintWriter out = new PrintWriter(outputFile);
             out.println(text);
             out.close();
         } else {
@@ -65,28 +57,37 @@ public class Preprocessing {
 
         ArrayList<String> lineWithoutSomeColumns = new ArrayList(Arrays.asList(startString.split(";")));
 
-        ArrayList<String> removingColumnsArray = new ArrayList(Arrays.asList(removingColumn.split(",")));
-        ArrayList<Integer> columns = getIntegerArray(removingColumnsArray);
+       if (lineWithoutSomeColumns.size() > 1) {
 
-        lineWithoutSomeColumns.set(6, "2");
+           if (needIdChanged){
+               lineWithoutSomeColumns.set(4, "2");
+           }
 
-        lineWithoutSomeColumns.remove(2);
-        lineWithoutSomeColumns.remove(1);
-        lineWithoutSomeColumns.remove(0);
+           needIdChanged = !needIdChanged;
 
-        for (int column : columns){
-            System.out.println("int column " + column);
-            lineWithoutSomeColumns.remove(column);
-        }
+           if (removingColumn != "") {
 
-        String result = lineWithoutSomeColumns.toString();
-        System.out.println("result " + result);
+               ArrayList<String> removingColumnsArray = new ArrayList(Arrays.asList(removingColumn.split(",")));
+               ArrayList<Integer> columns = getIntegerArray(removingColumnsArray);
 
-        return result;
+               for (int column : columns){
+                   lineWithoutSomeColumns.remove(column);
+               }
+           }
+
+           lineWithoutSomeColumns.remove(0);
+
+           String result = "^" + String.join("^", lineWithoutSomeColumns) + "^";
+           return result;
+
+       } else {
+           return "";
+       }
     }
 
     private ArrayList<Integer> getIntegerArray(ArrayList<String> stringArray) {
-        ArrayList<Integer> removingColumnIndexes = new ArrayList<Integer>();
+        ArrayList<Integer> removingColumnIndexes = new ArrayList<>();
+
         for(String stringValue : stringArray) {
             try {
                 removingColumnIndexes.add(Integer.parseInt(stringValue));

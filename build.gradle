@@ -11,9 +11,6 @@ repositories {
     mavenCentral()
 }
 
-dependencies {
-}
-
 jar {
     manifest {
         attributes 'Main-Class': 'ru.csvreader.main'
